@@ -1,0 +1,125 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+    </head>
+    <body>
+        <div id="conteudo"></div>
+        <style media="screen">
+            .coluna {
+                border : 1px solid black;
+                float : left;
+                padding : 10px;
+                min-width : 30px;
+            }
+
+            .linha {
+                clear : both;
+            }
+
+
+        </style>
+        <script type="text/javascript">
+
+            window.criarTabuleiro = (linhas, colunas) => {
+                var tabuleiro = [];
+
+                for (var linha = 0; linha < linhas; linha++) {
+                    tabuleiro[linha] = [];
+                    for (var coluna = 0; coluna < colunas; coluna++) {
+                        tabuleiro[linha][coluna] = null;
+                    }
+                }
+
+                return tabuleiro;
+            };
+
+            window.getTabuleiroComoString = (tabuleiro) => {
+                linhas = [];
+                for (var linha = 0; linha < tabuleiro.length; linha++)
+                    linhas.push(tabuleiro[linha].join(' | '));
+                return linhas.join("\n");
+            };
+
+            window.getTabuleiroComoHTML = (tabuleiro) => {
+
+                var linhas = tabuleiro.map(linha => {
+                    var colunasComoDiv = linha.map(valorColuna => `<div class="coluna">${valorColuna ? valorColuna : '0'}</div>`);
+                    return '<div class="linha">' + colunasComoDiv.join('') + '</div>';
+                });
+
+                return '<div class="tabuleiro">' + linhas.join('<br/>')  + '</div>';
+            };
+
+
+
+            // Define os monstros
+            window.Vampiro = function(){};
+            window.Fantasma = function(){};
+            window.Zombie = function(){};
+
+            // Define os espelhos
+            window.EspelhoParaDireita = function(){};
+            window.EspelhoParaEsquerda = function(){};
+
+
+            window.tabuleiro = criarTabuleiro(4,4);
+            tabuleiro[1][0] = '/';
+            tabuleiro[1][3] = '\\';
+            tabuleiro[2][2] = '/';
+            tabuleiro[3][2] = '\\';
+
+
+            console.log(getTabuleiroComoString(tabuleiro));
+
+            document.getElementById('conteudo').innerHTML = getTabuleiroComoHTML(tabuleiro);
+
+
+            window.resolver = function(tabuleiro) {
+
+                var vampirosDisponiveis = [
+                    new Vampiro(),
+                    new Vampiro(),
+                    new Vampiro(),
+                    new Vampiro()
+                ];
+
+                var fantasmasDisponiveis = [
+                    new Fantasma(),
+                    new Fantasma(),
+                    new Fantasma(),
+                    new Fantasma()
+                ];
+
+                var zombiesDisponiveis = [
+                    new Zombie(),
+                    new Zombie(),
+                    new Zombie(),
+                    new Zombie()
+                ];
+
+
+                // Iniciando da posicao 0,0
+                // Busca a primeira posicao nao preenchida
+                // 
+
+
+            }
+
+
+            resolver(window.tabuleiro);
+
+
+        </script>
+
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <img src="./maze.png" alt="Maze" style="width:200px;">
+        <img src="./solved.png" alt="Resolvido" style="width:200px;">
+
+
+    </body>
+</html>
