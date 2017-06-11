@@ -4,6 +4,11 @@
         <title></title>
     </head>
     <body>
+
+        <script src="funcoes_geral.js" charset="utf-8"></script>
+        <script src="solve.js" charset="utf-8"></script>
+        <script src="EstadoTabuleiro.js" charset="utf-8"></script>
+
         <div id="conteudo"></div>
         <style media="screen">
             .coluna {
@@ -21,188 +26,27 @@
         </style>
         <script type="text/javascript">
 
-            window.criarTabuleiro = (linhas, colunas) => {
-                var tabuleiro = [];
-
-                for (var linha = 0; linha < linhas; linha++) {
-                    tabuleiro[linha] = [];
-                    for (var coluna = 0; coluna < colunas; coluna++) {
-                        tabuleiro[linha][coluna] = null;
-                    }
-                }
-
-                return tabuleiro;
-            };
-
-            window.getTabuleiroComoString = (tabuleiro) => {
-                linhas = [];
-                for (var linha = 0; linha < tabuleiro.length; linha++)
-                    linhas.push(tabuleiro[linha].join(' | '));
-                return linhas.join("\n");
-            };
-
-            window.getTabuleiroComoHTML = (tabuleiro) => {
-
-                var linhas = tabuleiro.map(linha => {
-                    var colunasComoDiv = linha.map(valorColuna => `<div class="coluna">${valorColuna ? valorColuna : '0'}</div>`);
-                    return '<div class="linha">' + colunasComoDiv.join('') + '</div>';
-                });
-
-                return '<div class="tabuleiro">' + linhas.join('<br/>')  + '</div>';
-            };
-
-
-            // Define os monstros
-            window.Vampiro = function(){};
-            window.Fantasma = function(){};
-            window.Zombie = function(){};
-
-            // Define os espelhos
-            // window.EspelhoParaDireita = function(){};
-            // window.EspelhoParaEsquerda = function(){};
-            window.tabuleiro = criarTabuleiro(4,4);
-            tabuleiro[1][0] = '/';
-            tabuleiro[1][3] = '\\';
-            tabuleiro[2][2] = '/';
-            tabuleiro[3][2] = '\\';
-
-
-            console.log(getTabuleiroComoString(tabuleiro));
-
-            document.getElementById('conteudo').innerHTML = getTabuleiroComoHTML(tabuleiro);
-
-
-            // Estado do tabuleiro que JÁ recebeu novo monstro
-            // Estoque de monstros referente ao que ainda pode ser utilizado para preencher as posicoes
-            window.resolver = function(estadoTabuleiro, estoqueMonstros) {
-
-                const estadoTabuleiroEstaValido = estadoTabuleiro.isValid();
-
-                // Verifica se está valido e terminou de preencher todas as posicoes
-                if( estadoTabuleiroEstaValido && estadoTabuleiro.isFilled())
-                {
-                    // Terminou a lógica e preencheu tudo,
-                    // poderiamos imprimir o novo array na tela
-                }
-                else
-                {
-                    // ????????????????????????????
-                    // Caso o monstro que tinha sido passado nao deu certo, teriamos que voltar ele para o estoque dos monstros
-                    // Tipo a primeira interacao que chama pelo main passa o vampiro, mas se der errado nao precisariamos
-                    // voltar ele para o estoque de monstros?
-                    // Para que a próxima intereação tenha o vampiro para preencher o tabuleiro
-                    // Assim poderiamos adicionar ele no estoque de monstros e nao executar a tentativa de adicionar o vampiro de novo
-                    // ?????????????????????????????
-                    if( ! estadoTabuleiroEstaValido)
-                    {
-                        const ultimoMonstroInseridoQueDeuErrado = estadoTabuleiro.getUltimoMonstroInserido();
-                        // Adiciono ele novamente no estoque
-                        if(ultimoMonstroInseridoQueDeuErrado instanceof Vampiro)
-                        {
-                            estoqueMonstros.vampiros.push(ultimoMonstroInseridoQueDeuErrado);
-                        }
-
-                        if(ultimoMonstroInseridoQueDeuErrado instanceof Fantasma)
-                        {
-                            estoqueMonstros.fantasmas.push(ultimoMonstroInseridoQueDeuErrado);
-                        }
-
-                        if(ultimoMonstroInseridoQueDeuErrado instanceof Zombie)
-                        {
-                            estoqueMonstros.zombies.push(ultimoMonstroInseridoQueDeuErrado);
-                        }
-                    }
-
-
-                    // Como é objeto relacional eu clono o estoque dos montros para que a recursão
-                    // não altere o mesmo objeto e nao funcione o estoque de mosntros
-                    // Assim para cada nova recursao eu crio um novo objeto de estoque
-                    // com base no estoque inicial que foi passado
-
-
-                    // Caso o estado está valido, então quer dizer que o último monstro poderia ser adicionando novamente
-                    // Gerando tipo
-                    // Vampiro, [Vampiro] -> Novo monstro que será passado
-
-                    // Por que se Vampiro já gerou um estado inválido não tem sentido adicionar o mesmo monstro novamente
-
-                    // ???????????
-                    // Caso estiver inválido nao adicionar o mesmo monstro
-                    // ???????????????/
-
-                    const estoqueMonstrosRecursao = Object.assign({}, estoqueMonstros);
-                    var vampiro = estoqueMonstrosRecursao.vampiros.pop();
-                    if(vampiro && estadoTabuleiroEstaValido)
-                    {
-                        window.resolver(new EstadoTabuleiro(estadoTabuleiro.getState(), vampiro), estoqueMonstrosRecursao);
-                    }
-
-                    const estoqueMonstrosRecursao = Object.assign({}, estoqueMonstros);
-                    var fantasma = estoqueMonstrosRecursao.fantasmas.pop();
-                    if(fantasma && estadoTabuleiroEstaValido)
-                    {
-                        window.resolver(new EstadoTabuleiro(estadoTabuleiro.getState(), fantasma), estoqueMonstrosRecursao);
-                    }
-
-                    const estoqueMonstrosRecursao = Object.assign({}, estoqueMonstros);
-                    var zombie = estoqueMonstrosRecursao.zombies.pop();
-                    if(zombie && estadoTabuleiroEstaValido)
-                    {
-                        window.resolver(new EstadoTabuleiro(estadoTabuleiro.getState(), zombie), estoqueMonstrosRecursao);
-                    }
-                }
-            }
-
-
-            function EstadoTabuleiro(arrayTabuleiroInicial, monstroAletorio)
-            {
-                const estadoTabuleiro = arrayTabuleiroInicial;
-
-                // ???????????????????????????????????????
-                // Adiciona o monstro na primeira posicao valida do tabuleiro
-                // ???????????????????????????????????????
-                // PRECISA IMPLEMENTAR
-
-                // Retorna se o que tem até agora dentro do tabuleiro está valido ou não
-                const isValid = function (){
-                    // PRECISA IMPLEMENTAR
-                    // ???????????????????????????????????????????????????????????????
-                    // Aqui precisamos fazer a lógica para ler cada linha e contando com base nos mosntros
-                    // se a quantidade está certa por linha
-                    //
-                    // for (var i = 0; i < arrayTabuleiroInicial.length; i++) {
-                    //     arrayTabuleiroInicial[i]
-                    // }
-                    // ???????????????????????????????????????????????????????????????
-                    return true;
-                };
-
-                // Retorna se todas as posicoes do array estão preenchidas, nao necessáriamente dizendo que está valido
-                const isFilled = function(){
-                    // PRECISA IMPLEMENTAR
-                    // ???????????????????????????????????????????????????????????????
-                    return false;
-                    // ???????????????????????????????????????????????????????????????
-                }
-
-                const getState = function(){
-                    return estadoTabuleiro;
-                }
-
-                const getUltimoMonstroInserido = function(){
-                    return monstroAletorio;
-                }
-
-                return {
-                    isValid : isValid,
-                    getState : getState,
-                    getUltimoMonstroInserido : getUltimoMonstroInserido
-                };
-            };
-
-
             // Funcao sempre será executa quando que o navegador abrir
             function main(){
+
+                // Define os monstros
+                window.Vampiro = function(){};
+                window.Fantasma = function(){};
+                window.Zombie = function(){};
+
+                // Define os espelhos
+                // window.EspelhoParaDireita = function(){};
+                // window.EspelhoParaEsquerda = function(){};
+                window.tabuleiro = criarTabuleiro(4,4);
+                tabuleiro[1][0] = '/';
+                tabuleiro[1][3] = '\\';
+                tabuleiro[2][2] = '/';
+                tabuleiro[3][2] = '\\';
+
+
+                console.log(getTabuleiroComoString(tabuleiro));
+
+                document.getElementById('conteudo').innerHTML = getTabuleiroComoHTML(tabuleiro);
 
                 // Estado atual do tabuleiro, sem nenhum monstro preenchido
                 var estadoTabuleiro = window.tabuleiro;
@@ -230,10 +74,23 @@
                     ]
                 };
 
-                // Busco um monstro para começar a resolver
-                var monstroAleatorio = estoqueMonstros.vampiros.pop();
+                var estoqueMonstrosRecursao = Object.assign({}, estoqueMonstros);
+                var solucaoInicialComVampiro = window.solve(new EstadoTabuleiro(estadoTabuleiro, estoqueMonstrosRecursao.vampiros.pop()), estoqueMonstrosRecursao);
 
-                window.resolver(new EstadoTabuleiro(estadoTabuleiro, monstroAleatorio), estoqueMonstros);
+                var estoqueMonstrosRecursao = Object.assign({}, estoqueMonstros);
+                var solucaoInicialComFantasma = window.solve(new EstadoTabuleiro(estadoTabuleiro, estoqueMonstrosRecursao.fantasmas.pop()), estoqueMonstrosRecursao);
+
+                var estoqueMonstrosRecursao = Object.assign({}, estoqueMonstros);
+                var solucaoInicialComZombie = window.solve(new EstadoTabuleiro(estadoTabuleiro, estoqueMonstrosRecursao.zombies.pop()), estoqueMonstrosRecursao);
+
+                console.log(
+                    'solucaoInicialComVampiro',
+                    solucaoInicialComVampiro,
+                    'solucaoInicialComZombie',
+                    solucaoInicialComZombie,
+                    'solucaoInicialComFantasma',
+                    solucaoInicialComFantasma
+                );
             };
 
             // Executa o e tenta resolver
