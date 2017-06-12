@@ -7,34 +7,52 @@ window.EstadoTabuleiro = function(arrayTabuleiroInicial, monstroAletorio)
     // ???????????????????????????????????????
     // PRECISA IMPLEMENTAR
 
+    const set = function (linha, coluna, valor) {
+        estadoTabuleiro[linha][coluna] = valor;
+    };
+
+
+
     // Retorna se o que tem até agora dentro do tabuleiro está valido ou não
     const isValid = function (){
-        // PRECISA IMPLEMENTAR
-        // ???????????????????????????????????????????????????????????????
-        // Aqui precisamos fazer a lógica para ler cada linha e contando com base nos mosntros
-        // se a quantidade está certa por linha
-        //
-        // for (var i = 0; i < arrayTabuleiroInicial.length; i++) {
-        //     arrayTabuleiroInicial[i]
-        // }
-        // ???????????????????????????????????????????????????????????????
+        if ( contaMonstro('V') > 4 )
+            return false;
+        if ( contaMonstro('Z') > 4 )
+            return false;
+        if ( contaMonstro('F') > 4 )
+            return false;
+        
         return true;
     };
 
-    // Retorna se todas as posicoes do array estão preenchidas, nao necessáriamente dizendo que está valido
-    const isFilled = function(){
-        var tudoPreenchido = true;
-
+    const contaMonstro = function (monstro) {
+        var cont = 0;
         for (var linha = 0; linha < estadoTabuleiro.length; linha++) {
             for (var coluna = 0; coluna < estadoTabuleiro[linha].length; coluna++) {
-                console.log(estadoTabuleiro[linha][coluna]);
-                if( ! estadoTabuleiro[linha][coluna]){
-                    tudoPreenchido = false;
+                if( estadoTabuleiro[linha][coluna] == monstro){
+                    cont++;
+                }
+            }
+        }
+        return cont;
+    }
+
+    // Retorna se todas as posicoes do array estão preenchidas, nao necessáriamente dizendo que está valido
+    const isFilled = function(){
+        var tudoPreenchido = {};
+        tudoPreenchido.estado = true;
+        for (var linha = 0; linha < estadoTabuleiro.length; linha++) {
+            for (var coluna = 0; coluna < estadoTabuleiro[linha].length; coluna++) {
+                // console.log(estadoTabuleiro[linha][coluna]);
+                if( estadoTabuleiro[linha][coluna] == '?'){
+                    tudoPreenchido.estado = false;
+                    tudoPreenchido.linha = linha;
+                    tudoPreenchido.coluna = coluna;
                     break;
                 }
             }
 
-            if( ! tudoPreenchido)
+            if( ! tudoPreenchido.estado)
             {
                 break;
             }
@@ -50,6 +68,7 @@ window.EstadoTabuleiro = function(arrayTabuleiroInicial, monstroAletorio)
     return {
         isValid : isValid,
         getState : getState,
-        isFilled : isFilled
+        isFilled : isFilled,
+        set : set
     };
 };
