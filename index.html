@@ -14,7 +14,7 @@
         <br />
         <br />
         <br />
-        <button type="button" name="button" onclick="resolver();">Resolver</button>
+        <button type="button" name="button" onclick="resolver();" style="width:300px;">Resolver</button>
 
         <br>
 
@@ -85,7 +85,7 @@
                 var estadoParaVer = document.getElementById('estadoVisualiar').value;
                 estadoParaVer++;
 
-                if(estadoParaVer > window.estadosPassados.length) {
+                if( ! window.estadosPassados || estadoParaVer > window.estadosPassados.length) {
                     alert('Não existe tal estado!');
                     return false;
                 }
