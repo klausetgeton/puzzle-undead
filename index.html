@@ -10,6 +10,20 @@
         <script src="EstadoTabuleiro.js" charset="utf-8"></script>
 
         <div id="conteudo"></div>
+
+        <br />
+        <br />
+        <br />
+        <button type="button" name="button" onclick="resolver();">Resolver</button>
+
+        <br>
+
+        <button type="button" class="btn-small" name="button" onclick="estadoAnterior();"><<</button><input onblur="visualizarEstado(document.getElementById('estadoVisualiar').value);" id="estadoVisualiar" style="text-align:center"/><button class="btn-small" type="button" name="button" onclick="proximoEstado();">>></button>
+        <!-- <button type="button" name="button" onclick="visualizarEstado(document.getElementById('estadoVisualiar').value);">Visualizar estado</button> -->
+
+
+
+
         <style media="screen">
             .coluna {
                 border : 1px solid black;
@@ -26,6 +40,15 @@
                 background: silver;
             }
 
+            input, button {
+                clear:both;
+                width: 200px;
+                height : 30px;
+            }
+
+            .btn-small {
+                width: 50px;
+            }
 
         </style>
         <script type="text/javascript">
@@ -33,14 +56,7 @@
             // Funcao sempre será executa quando que o navegador abrir
             function main(){
 
-                // Define os monstros
-                window.Vampiro = function(){};
-                window.Fantasma = function(){};
-                window.Zombie = function(){};
-
                 // Define os espelhos
-                // window.EspelhoParaDireita = function(){};
-                // window.EspelhoParaEsquerda = function(){};
                 var respostas = ['=',1,3,4,0,'=',3,3,0,1,2,0,2,2,'=',4,3,2,5,'='];
                 window.tabuleiro = criarTabuleiro(6,6, respostas);
                 tabuleiro[2][1] = '/';
@@ -48,65 +64,77 @@
                 tabuleiro[3][3] = '/';
                 tabuleiro[4][3] = '\\';
 
-
-                // console.log(getTabuleiroComoString(tabuleiro));
-
                 document.getElementById('conteudo').innerHTML = getTabuleiroComoHTML(tabuleiro);
-
-                // Estado atual do tabuleiro, sem nenhum monstro preenchido
-                var estadoTabuleiro = window.tabuleiro;
-
-                // Deixei como objetos para poder validar o que é em cada posicao, tipo -> if(posicaoArray typeof Vampiro) {}
-                // Monstro aleatório para começar os testes
-                var estoqueMonstros = {
-                    vampiros : [
-                        new Vampiro(),
-                        new Vampiro(),
-                        new Vampiro(),
-                        new Vampiro()
-                    ],
-                    fantasmas : [
-                        new Fantasma(),
-                        new Fantasma(),
-                        new Fantasma(),
-                        new Fantasma()
-                    ],
-                    zombies : [
-                        new Zombie(),
-                        new Zombie(),
-                        new Zombie(),
-                        new Zombie()
-                    ]
-                };
-
-
-                var estoqueMonstrosRecursao = Object.assign({}, estoqueMonstros);
-                window.solve(new EstadoTabuleiro(estadoTabuleiro, estoqueMonstrosRecursao) );
-                console.log(window.count);
-                // console.log(getTabuleiroComoString(tabuleiro));
-
-
-
-                // var estoqueMonstrosRecursao = Object.assign({}, estoqueMonstros);
-                // var solucaoInicialComVampiro = window.solve(new EstadoTabuleiro(estadoTabuleiro, estoqueMonstrosRecursao.vampiros.pop()), estoqueMonstrosRecursao);
-
-                // var estoqueMonstrosRecursao = Object.assign({}, estoqueMonstros);
-                // var solucaoInicialComFantasma = window.solve(new EstadoTabuleiro(estadoTabuleiro, estoqueMonstrosRecursao.fantasmas.pop()), estoqueMonstrosRecursao);
-
-                // var estoqueMonstrosRecursao = Object.assign({}, estoqueMonstros);
-                // var solucaoInicialComZombie = window.solve(new EstadoTabuleiro(estadoTabuleiro, estoqueMonstrosRecursao.zombies.pop()), estoqueMonstrosRecursao);
-
-                
             };
+
+
+            function estadoAnterior(){
+                var estadoParaVer = document.getElementById('estadoVisualiar').value;
+                estadoParaVer--;
+
+                if(estadoParaVer < 1) {
+                    alert('Não existe tal estado!');
+                    return false;
+                }
+
+                document.getElementById('estadoVisualiar').value = estadoParaVer;
+                visualizarEstado(estadoParaVer);
+            }
+
+            function proximoEstado(){
+                var estadoParaVer = document.getElementById('estadoVisualiar').value;
+                estadoParaVer++;
+
+                if(estadoParaVer > window.estadosPassados.length) {
+                    alert('Não existe tal estado!');
+                    return false;
+                }
+
+                document.getElementById('estadoVisualiar').value = estadoParaVer;
+                visualizarEstado(estadoParaVer);
+            }
+
+
+            function resolver(){
+
+                window.count = 0;
+                window.estadosPassados = [];
+
+                var estadoSolucao = window.solve(new EstadoTabuleiro(window.tabuleiro) );
+
+                if(estadoSolucao){
+                    console.log(estadoSolucao);
+                    alert('Solução encontrada!');
+                    document.getElementById('conteudo').innerHTML = getTabuleiroComoHTML(estadoSolucao.getState());
+                }
+
+                console.log(window.count);
+
+                document.getElementById('estadoVisualiar').value = window.estadosPassados.length;
+            }
+
+            function visualizarEstado(posicaoEstado)
+            {
+                if( ! window.estadosPassados)
+                {
+                    alert('Primeiro clique em resolver!');
+                }
+                else
+                {
+                    if( ! window.estadosPassados[posicaoEstado-1])
+                    {
+                        alert('Este valor não existe, aceita-se valores de 1 ' + ' até ' + estadosPassados.length);
+                    }
+                    else
+                    {
+                        document.getElementById('conteudo').innerHTML = getTabuleiroComoHTML(window.estadosPassados[posicaoEstado-1].getState());
+                    }
+                }
+            }
+
 
             // Executa o e tenta resolver
             main();
-
-
-
-
-
-
         </script>
 
         <br>

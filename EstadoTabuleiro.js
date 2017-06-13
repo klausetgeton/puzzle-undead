@@ -1,4 +1,4 @@
-window.EstadoTabuleiro = function(arrayTabuleiroInicial, monstroAletorio)
+window.EstadoTabuleiro = function(arrayTabuleiroInicial)
 {
     const estadoTabuleiro = arrayTabuleiroInicial;
 
@@ -8,17 +8,17 @@ window.EstadoTabuleiro = function(arrayTabuleiroInicial, monstroAletorio)
 
     // Retorna se o que tem até agora dentro do tabuleiro está valido ou não
     const isValid = function (){
-        
+
         if ( contaMonstro('V') > 4 )
             return false;
         if ( contaMonstro('Z') > 4 )
             return false;
         if ( contaMonstro('F') > 4 )
             return false;
-        
+
         //qualquer linha invalida volta na recursao
         if (   !validaDirecao( 'linha', 1, 'esquerda') || !validaDirecao( 'linha', 2, 'esquerda') || !validaDirecao( 'linha', 3, 'esquerda') || !validaDirecao( 'linha', 4, 'esquerda')
-            || !validaDirecao( 'linha', 1, 'direita')  || !validaDirecao( 'linha', 2, 'direita')  || !validaDirecao( 'linha', 3, 'direita')  || !validaDirecao( 'linha', 4, 'direita') 
+            || !validaDirecao( 'linha', 1, 'direita')  || !validaDirecao( 'linha', 2, 'direita')  || !validaDirecao( 'linha', 3, 'direita')  || !validaDirecao( 'linha', 4, 'direita')
             || !validaDirecao( 'coluna', 1, 'cima')    || !validaDirecao( 'coluna', 2, 'cima')    || !validaDirecao( 'coluna', 3, 'cima')    || !validaDirecao( 'coluna', 4, 'cima')
             || !validaDirecao( 'coluna', 1, 'baixo')   || !validaDirecao( 'coluna', 2, 'baixo')   || !validaDirecao( 'coluna', 3, 'baixo')    || !validaDirecao( 'coluna', 4, 'baixo')
             ) {
@@ -43,7 +43,7 @@ window.EstadoTabuleiro = function(arrayTabuleiroInicial, monstroAletorio)
 
         if ( linhaColuna == 'linha') {
             movimento.linhaAtual  = numLinhaColuna;
-            
+
             // Esquerda vai para ->
             // Direita vai para <-
             if( lado == 'esquerda') {
@@ -74,9 +74,9 @@ window.EstadoTabuleiro = function(arrayTabuleiroInicial, monstroAletorio)
                 quantidadeMonstros    = estadoTabuleiro[5][numLinhaColuna];
             }
         }
-        
 
-        while( !movimento.fimLinha ) {
+
+        while( ! movimento.fimLinha ) {
             andar(movimento);
         }
 
@@ -87,7 +87,7 @@ window.EstadoTabuleiro = function(arrayTabuleiroInicial, monstroAletorio)
     }
 
     const andar = function( movimento ) {
-        
+
         if ( movimento.direcao == 'direita' )
             movimento.colunaAtual++;
 
@@ -129,7 +129,7 @@ window.EstadoTabuleiro = function(arrayTabuleiroInicial, monstroAletorio)
                     movimento.monstrosVistos++;
             }
         }
-        
+
         //Significa que chegou até o outro lado
         if ( Number.isInteger(valorCelula) ) {
             movimento.fimLinha = true;
