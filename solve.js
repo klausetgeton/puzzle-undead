@@ -15,8 +15,13 @@ window.solve = function(estadoTabuleiro, estoqueMonstros) {
     var preenchimento = estadoTabuleiro.isFilled();
 
     if ( preenchimento.estado ) { //Fileed
+
+        console.log(getTabuleiroComoString( estadoTabuleiro.getState() ) );
+        // throw new Error("@@@");
+
         if ( estadoTabuleiro.isValid() ) {
             //termina
+            // alert(1);
         }
         else {
             return false;
